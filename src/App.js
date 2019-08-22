@@ -17,7 +17,7 @@ const CarroLista = () => {
   useEffect(() => {
     let ignore = false;
     async function getCarros() {
-      const carros = await axios('http://devtests.powers.com.br:8888/carros/');
+      const carros = await axios('http://localhost:5000/carros/');
       if (!ignore) setLista(carros.data);
     }
     getCarros();
@@ -28,7 +28,7 @@ const CarroLista = () => {
 
   const deleteCarro = codigo => {
     axios
-      .delete('http://devtests.powers.com.br:8888/carros/' + codigo)
+      .delete('http://localhost:5000/carros/' + codigo)
       .then(response => {
         window.alert('Carro ' + codigo + ' apagado')
         setAltera(!altera)
@@ -60,14 +60,14 @@ const CarroLista = () => {
                   <TableCell>{carro.modelo}</TableCell>
                   <TableCell>{carro.preco}</TableCell>
                   <TableCell>
-                    <IconButton onClick={() => deleteCarro(carro.codigo)}>
-                      <Delete />
-                    </IconButton>
-                    <Link to="/carro/">
+                    <Link to={"/carros/" + carro.codigo}>
                       <IconButton>
                         <Edit />
                       </IconButton>
                     </Link>
+                    <IconButton onClick={() => deleteCarro(carro.codigo)}>
+                      <Delete />
+                    </IconButton>
                   </TableCell>
                 </TableRow>
               );
@@ -96,6 +96,7 @@ function App() {
         <Route path="/" exact component={CarroTitulo} />
         <Route path="/carros" exact component={CarroLista} />
         <Route path="/novo" exact component={AdicionaCarro} />
+        <Route path="/carros/:id" exact component={AdicionaCarro} />
       </div>
     </Router>
   );
