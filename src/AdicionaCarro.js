@@ -1,14 +1,25 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { TextField, Button } from '@material-ui/core';
 import axios from 'axios'
 
-const AdicionaCarro = () => {
+const AdicionaCarro = ({match, history}) => {
   const [valores, setValores] = useState({
     codigo: 0,
     marca: '',
     modelo: '',
     preco: 0
-  })
+  }) 
+
+  console.log(match)
+  
+  useEffect(() => {
+    async function getCarros(id) {
+      const carros = await axios('http://localhost:5000/carros/'+id);
+      setValores(carros.data)
+    }
+    getCarros(match.params.id);
+
+  }, [match.params.id]);
 
   console.log(valores)
 
@@ -19,9 +30,20 @@ const AdicionaCarro = () => {
     setValores({...valores, [name]: parseInt(event.target.value)})
   }
 
+  const atualizarCarro = (carro, id) => {
+    axios
+      .put('http://localhost:5000/carros/' + id, carro)
+      .then(response => {
+        window.alert('Carro ' + carro.codigo + ' foi atualizado')
+      })
+      .catch(response => {
+        window.alert("Deu nhaca!")
+      })
+  }
+
   const salvarCarro = carro => {
     axios
-      .post('http://devtests.powers.com.br:8888/carros/', carro)
+      .post('http://localhost:5000/carros/', carro)
       .then(response => {
         console.log("Carro Adicionado")
     })
@@ -54,7 +76,11 @@ const AdicionaCarro = () => {
         value={valores.preco}
         onChange={handleNumberChange('preco')}
        />
-       <Button onClick={() => salvarCarro(valores)}>Salvar Carro</Button>
+        {Boolean(match.params.id) 
+          ? <Button onClick={() => atualizarCarro(valores, match.params.id)}>Salvar Carro</Button>
+          : <Button onClick={() => salvarCarro(valores)}>Cadastrar Carro</Button>
+        }
+       
     </form>
   </div>)
 }
