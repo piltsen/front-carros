@@ -5,9 +5,22 @@ import { AdicionaCarro } from './AdicionaCarro';
 import { Delete, Edit } from '@material-ui/icons';
 import axios from 'axios';
 import './App.css';
+import { SERVER_URL } from './utils/constants';
 
-function CarroTitulo() {
-  return <div className="titulo">Sistema de Vendas de Carros POWERSolutions</div>;
+const Titulo = ({qualquercoisa, ...props}) => {
+  return (
+    <div>
+      <div>{qualquercoisa}</div>
+    </div>
+  );
+};
+
+function CarroTitulo(props) {
+  return (
+    <div className="titulo">
+      <Titulo qualquercoisa={'Controle de Carros PWX'} carro={1}  />
+    </div>
+  );
 }
 
 const CarroLista = () => {
@@ -17,7 +30,7 @@ const CarroLista = () => {
   useEffect(() => {
     let ignore = false;
     async function getCarros() {
-      const carros = await axios('http://localhost:5000/carros/');
+      const carros = await axios(SERVER_URL + 'carros/');
       if (!ignore) setLista(carros.data);
     }
     getCarros();
@@ -27,13 +40,11 @@ const CarroLista = () => {
   }, [altera]);
 
   const deleteCarro = codigo => {
-    axios
-      .delete('http://localhost:5000/carros/' + codigo)
-      .then(response => {
-        window.alert('Carro ' + codigo + ' apagado')
-        setAltera(!altera)
-      })
-  }
+    axios.delete(SERVER_URL + 'carros/' + codigo).then(response => {
+      window.alert('Carro ' + codigo + ' apagado');
+      setAltera(!altera);
+    });
+  };
 
   console.log(lista);
 
@@ -60,7 +71,7 @@ const CarroLista = () => {
                   <TableCell>{carro.modelo}</TableCell>
                   <TableCell>{carro.preco}</TableCell>
                   <TableCell>
-                    <Link to={"/carros/" + carro.codigo}>
+                    <Link to={'/carros/' + carro.codigo}>
                       <IconButton>
                         <Edit />
                       </IconButton>

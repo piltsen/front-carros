@@ -1,89 +1,100 @@
 import React, { useState, useEffect } from 'react';
-import { TextField, Button } from '@material-ui/core';
-import axios from 'axios'
+import { TextField, Button, Grid } from '@material-ui/core';
+import axios from 'axios';
+import { SERVER_URL } from "./utils/constants";
 
-const AdicionaCarro = ({match, history}) => {
+const AdicionaCarro = ({ match, history }) => {
   const [valores, setValores] = useState({
     codigo: 0,
     marca: '',
     modelo: '',
     preco: 0
-  }) 
+  });
 
-  console.log(match)
-  
   useEffect(() => {
     async function getCarros(id) {
-      const carros = await axios('http://localhost:5000/carros/'+id);
-      setValores(carros.data)
+      const carros = await axios(SERVER_URL + 'carros/' + id);
+      setValores(carros.data);
     }
-    getCarros(match.params.id);
-
+    if (match.params.id) {
+      getCarros(match.params.id);
+    }
   }, [match.params.id]);
 
-  console.log(valores)
+  console.log(valores);
 
   const handleChange = name => event => {
-    setValores({...valores, [name]: event.target.value})
-  }
+    setValores({ ...valores, [name]: event.target.value });
+  };
   const handleNumberChange = name => event => {
-    setValores({...valores, [name]: parseInt(event.target.value)})
-  }
+    setValores({ ...valores, [name]: parseInt(event.target.value) });
+  };
 
   const atualizarCarro = (carro, id) => {
     axios
-      .put('http://localhost:5000/carros/' + id, carro)
+      .put(SERVER_URL + 'carros/' + id, carro)
       .then(response => {
-        window.alert('Carro ' + carro.codigo + ' foi atualizado')
+        window.alert('Carro ' + carro.codigo + ' foi atualizado');
       })
       .catch(response => {
-        window.alert("Deu nhaca!")
-      })
-  }
+        window.alert('Deu nhaca!');
+      });
+  };
 
   const salvarCarro = carro => {
-    axios
-      .post('http://localhost:5000/carros/', carro)
-      .then(response => {
-        console.log("Carro Adicionado")
-    })
-  }
+    axios.post('http://localhost:5000/carros/', carro).then(response => {
+      console.log('Carro Adicionado');
+    });
+  };
   return (
-  <div>
-    <div>Novo Carro</div>
-    <form>
-      <TextField
-        id="codigo"
-        label="Código"
-        value={valores.codigo}
-        onChange={handleNumberChange('codigo')}
-       />
-       <TextField
-        id="marca"
-        label="Marca"
-        value={valores.marca}
-        onChange={handleChange('marca')}
-       />
-       <TextField
-        id="modelo"
-        label="Modelo"
-        value={valores.modelo}
-        onChange={handleChange('modelo')}
-       />
-       <TextField
-        id="preco"
-        label="Preço"
-        value={valores.preco}
-        onChange={handleNumberChange('preco')}
-       />
-        {Boolean(match.params.id) 
-          ? <Button onClick={() => atualizarCarro(valores, match.params.id)}>Salvar Carro</Button>
-          : <Button onClick={() => salvarCarro(valores)}>Cadastrar Carro</Button>
-        }
-       
-    </form>
-  </div>)
-}
+    <Grid container>
+      <Grid item xs={12} sm={8} md={6} lg={4}>
+        <div style={{ padding: 20 }}>Novo Carro</div>
+        <form>
+          <div className="menu">
+            <TextField
+              variant="outlined"
+              style={{ margin: 10 }}
+              id="codigo"
+              label="Código"
+              value={valores.codigo}
+              onChange={handleNumberChange('codigo')}
+              disabled={true}
+            />
+            <TextField
+              variant="outlined"
+              style={{ margin: 10 }}
+              id="marca"
+              label="Marca"
+              value={valores.marca}
+              onChange={handleChange('marca')}
+            />
+            <TextField
+              variant="outlined"
+              style={{ margin: 10 }}
+              id="modelo"
+              label="Modelo"
+              value={valores.modelo}
+              onChange={handleChange('modelo')}
+            />
+            <TextField
+              variant="outlined"
+              style={{ margin: 10 }}
+              id="preco"
+              label="Preço"
+              value={valores.preco}
+              onChange={handleNumberChange('preco')}
+            />
+            {Boolean(match.params.id) ? (
+              <Button onClick={() => atualizarCarro(valores, match.params.id)}>Salvar Carro</Button>
+            ) : (
+              <Button onClick={() => salvarCarro(valores)}>Cadastrar Carro</Button>
+            )}
+          </div>
+        </form>
+      </Grid>
+    </Grid>
+  );
+};
 
-export { AdicionaCarro }
-
+export { AdicionaCarro };

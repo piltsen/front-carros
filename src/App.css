@@ -3,6 +3,12 @@
   margin: 10px;
   padding-left: 10px;
 }
+
+.menu {
+  display: flex;
+  flex-direction: column;
+}
+
 .App {
   text-align: center;
 }
