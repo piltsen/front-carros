@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { TextField, Button, Grid } from '@material-ui/core';
+import { TextField, Button, Grid, InputAdornment } from '@material-ui/core';
 import axios from 'axios';
 import { SERVER_URL } from "./utils/constants";
 
@@ -28,6 +28,9 @@ const AdicionaCarro = ({ match, history }) => {
   };
   const handleNumberChange = name => event => {
     setValores({ ...valores, [name]: parseInt(event.target.value) });
+  };
+  const handlePriceChange = name => event => {
+    setValores({ ...valores, [name]: parseInt(event.target.value ? event.target.value : 0) });
   };
 
   const atualizarCarro = (carro, id) => {
@@ -83,7 +86,11 @@ const AdicionaCarro = ({ match, history }) => {
               id="preco"
               label="Preço"
               value={valores.preco}
-              onChange={handleNumberChange('preco')}
+              onChange={handlePriceChange('preco')}
+              InputProps={{
+                startAdornment: <InputAdornment position="start">R$</InputAdornment>,
+                endAdornment: <InputAdornment position="end">,00</InputAdornment>
+              }}
             />
             {Boolean(match.params.id) ? (
               <Button onClick={() => atualizarCarro(valores, match.params.id)}>Salvar Carro</Button>

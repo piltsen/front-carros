@@ -6,6 +6,7 @@ import { Delete, Edit } from '@material-ui/icons';
 import axios from 'axios';
 import './App.css';
 import { SERVER_URL } from './utils/constants';
+import Marcas from './Marcas';
 
 const Titulo = ({qualquercoisa, ...props}) => {
   return (
@@ -103,11 +104,15 @@ function App() {
         <Link to="/novo">
           <Button>Novo Carro</Button>
         </Link>
+        <Link to="/marcas">
+          <Button>Marcas</Button>
+        </Link>
 
         <Route path="/" exact component={CarroTitulo} />
         <Route path="/carros" exact component={CarroLista} />
         <Route path="/novo" exact component={AdicionaCarro} />
         <Route path="/carros/:id" exact component={AdicionaCarro} />
+        <Route path="/marcas" exact component={Marcas} />
       </div>
     </Router>
   );
